@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Uvoz zaključen{% endblock %}
+
+{% block content %}
+<h2>Uvoz zaključen</h2>
+<p class="success">Uvozili ste {{ count }} zapisov.</p>
+<a href="/contracts" class="button">Poglej pogodbe</a>
+<a href="/import" class="button secondary">Nazaj na uvoz</a>
+{% endblock %}

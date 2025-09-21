@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sledenje pogodb{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Attempt to load Inter font from Google Fonts (offline fallback to system fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sledenje pogodb</h1>
+            <nav>
+                <a href="/">Nadzorna plošča</a>
+                <a href="/contracts">Pogodbe</a>
+                <a href="/urgency/kritično">Kritično</a>
+                <a href="/urgency/opozorilo">Opozorilo</a>
+                <a href="/urgency/informativno">Informativno</a>
+                <a href="/import">Uvoz</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Uvoz pogodb{% endblock %}
+
+{% block head %}
+<script src="/static/js/import.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<h2>Uvoz pogodb</h2>
+<p>Dodajte datoteko s pogodbami v formatu Excel (.xlsx, .xls) ali CSV. Za pravilno strukturo uporabite <a href="/template">predlogo</a>.</p>
+
+{% if errors %}
+    <div class="error">
+        <ul>
+            {% for err in errors %}
+            <li>{{ err }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<form id="importForm">
+    <div class="import-dropzone">
+        Povlecite in spustite datoteko tukaj ali kliknite za izbiro.
+        <input type="file" id="fileInput" accept=".csv,.xls,.xlsx" style="display:none;">
+    </div>
+    <div style="margin-bottom:1rem;">
+        <button type="submit" class="button">Naloži in prikaži predogled</button>
+    </div>
+</form>
+
+<script>
+// When the dropzone is clicked, trigger the file input
+document.addEventListener('DOMContentLoaded', function () {
+    const dropzone = document.querySelector('.import-dropzone');
+    const fileInput = document.querySelector('#fileInput');
+    const form = document.querySelector('#importForm');
+    dropzone.addEventListener('click', function() {
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', function() {
+        if (fileInput.files.length > 0) {
+            dropzone.textContent = 'Izbrana datoteka: ' + fileInput.files[0].name;
+        }
+    });
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Najprej izberite datoteko za uvoz.');
+            return;
+        }
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64String = event.target.result.split(',')[1];
+            fetch('/import/preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ filename: file.name, content: base64String })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Replace current document with new HTML
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Prišlo je do napake pri pošiljanju datoteke.');
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Nadzorna plošča{% endblock %}
+
+{% block content %}
+<h2>Nadzorna plošča</h2>
+<div class="dashboard-metrics">
+    <div class="metric-card">
+        <h2>Skupaj pogodb</h2>
+        <p>{{ metrics.total }}</p>
+    </div>
+    <div class="metric-card">
+        <h2>Aktivne pogodbe</h2>
+        <p>{{ metrics.active }}</p>
+    </div>
+    <div class="metric-card">
+        <h2>Kmalu potečejo</h2>
+        <p>{{ metrics.soon }}</p>
+    </div>
+    <div class="metric-card">
+        <h2>Potekle</h2>
+        <p>{{ metrics.expired }}</p>
+    </div>
+    <div class="metric-card">
+        <h2>Skupna vrednost</h2>
+        <p>{{ "{:.2f}".format(metrics.total_value) }}</p>
+    </div>
+</div>
+
+<h3>Najnovejše pogodbe</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Začetek</th>
+            <th>Konec</th>
+            <th>Vrednost</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in metrics.latest %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.start_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ c.end_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ "{:.2f}".format(c.value) }}</td>
+            <td>
+                <span class="status-badge status-{{ c.status }}">{{ c.status }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Pogodbe, ki kmalu potečejo</h3>
+{% if soon_contracts %}
+<table>
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Konec</th>
+            <th>Dni do izteka</th>
+            <th>Nujnost</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in soon_contracts %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.end_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ c.days_left }}</td>
+            <td><span class="status-badge urgency-{{ c.urgency }}">{{ c.urgency }}</span></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Ni pogodb, ki bi kmalu potekle.</p>
+{% endif %}
+
+{% endblock %}

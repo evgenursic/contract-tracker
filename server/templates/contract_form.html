@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{% if contract %}Uredi pogodbo{% else %}Nova pogodba{% endif %}{% endblock %}
+
+{% block content %}
+<h2>{% if contract %}Uredi pogodbo{% else %}Nova pogodba{% endif %}</h2>
+<form method="post" action="{% if contract %}/contracts/edit/{{ contract.id }}{% else %}/contracts/new{% endif %}">
+    <div style="margin-bottom:1rem;">
+        <label for="name">Ime pogodbe*</label><br>
+        <input type="text" id="name" name="name" value="{{ contract.name if contract else '' }}" required style="width:100%; padding:0.4rem; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    <div style="margin-bottom:1rem;">
+        <label for="start_date">Datum začetka*</label><br>
+        <input type="date" id="start_date" name="start_date" value="{{ contract.start_date.strftime('%Y-%m-%d') if contract else '' }}" required style="padding:0.4rem; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    <div style="margin-bottom:1rem;">
+        <label for="end_date">Datum konca*</label><br>
+        <input type="date" id="end_date" name="end_date" value="{{ contract.end_date.strftime('%Y-%m-%d') if contract else '' }}" required style="padding:0.4rem; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    <div style="margin-bottom:1rem;">
+        <label for="value">Vrednost* (v EUR)</label><br>
+        <input type="number" step="0.01" id="value" name="value" value="{{ contract.value if contract else '' }}" required style="padding:0.4rem; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    <div style="margin-bottom:1rem;">
+        <label for="description">Opis</label><br>
+        <textarea id="description" name="description" rows="4" style="width:100%; padding:0.4rem; border:1px solid #ccc; border-radius:4px;">{{ contract.description if contract else '' }}</textarea>
+    </div>
+    <button type="submit" class="button">Shrani</button>
+    <a href="/contracts" class="button secondary">Prekliči</a>
+</form>
+{% endblock %}

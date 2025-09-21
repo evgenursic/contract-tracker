@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Pogodbe{% endblock %}
+
+{% block content %}
+<h2>Pogodbe</h2>
+
+<div style="margin-bottom: 1rem; display:flex; flex-wrap: wrap; gap:0.5rem; align-items: center;">
+    <form method="get" action="/contracts" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+        <input type="text" name="search" value="{{ search }}" placeholder="Iskanje po imenu..." style="padding:0.4rem; border:1px solid #ccc; border-radius:4px;" />
+        <select name="status" style="padding:0.4rem; border:1px solid #ccc; border-radius:4px;">
+            <option value="">Vsi statusi</option>
+            <option value="active" {% if status=='active' %}selected{% endif %}>Aktivne</option>
+            <option value="soon" {% if status=='soon' %}selected{% endif %}>Kmalu potečejo</option>
+            <option value="expired" {% if status=='expired' %}selected{% endif %}>Potekle</option>
+        </select>
+        <button type="submit" class="button secondary">Filtriraj</button>
+    </form>
+    <a href="/contracts/new" class="button">Dodaj novo</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Začetek</th>
+            <th>Konec</th>
+            <th>Vrednost</th>
+            <th>Status</th>
+            <th>Nujnost</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in contracts %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.start_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ c.end_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ "{:.2f}".format(c.value) }}</td>
+            <td><span class="status-badge status-{{ c.status }}">{{ c.status }}</span></td>
+            <td><span class="status-badge urgency-{{ c.urgency }}">{{ c.urgency }}</span></td>
+            <td class="actions">
+                <a class="button secondary" href="/contracts/edit/{{ c.id }}">Uredi</a>
+                <form class="inline" method="post" action="/contracts/delete/{{ c.id }}" onsubmit="return confirm('Ste prepričani, da želite izbrisati to pogodbo?');">
+                    <button type="submit" class="button danger">Izbriši</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% if not contracts %}
+        <tr><td colspan="7">Ni najdenih pogodb.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

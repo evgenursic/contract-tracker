@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ level.capitalize() }} pogodbe{% endblock %}
+
+{% block content %}
+<h2>Pogodbe - {{ level.capitalize() }}</h2>
+<a href="/" class="button secondary" style="margin-bottom:1rem; display:inline-block;">Nazaj na nadzorno ploščo</a>
+<table>
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Začetek</th>
+            <th>Konec</th>
+            <th>Dni do izteka</th>
+            <th>Vrednost</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in contracts %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.start_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ c.end_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ c.days_left }}</td>
+            <td>{{ "{:.2f}".format(c.value) }}</td>
+            <td><span class="status-badge urgency-{{ c.urgency }}">{{ c.urgency }}</span></td>
+        </tr>
+        {% endfor %}
+        {% if not contracts %}
+        <tr><td colspan="6">Ni pogodb za to stopnjo nujnosti.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Predogled uvoza{% endblock %}
+
+{% block content %}
+<h2>Predogled podatkov</h2>
+{% if errors %}
+<div class="error">
+    <p>Med analizo datoteke so bile zaznane naslednje napake:</p>
+    <ul>
+        {% for err in errors %}
+        <li>{{ err }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ime</th>
+            <th>Začetek</th>
+            <th>Konec</th>
+            <th>Vrednost</th>
+            <th>Opis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rec in records %}
+        <tr>
+            <td>{{ rec.row_index }}</td>
+            <td>{{ rec.name }}</td>
+            <td>{{ rec.start_date }}</td>
+            <td>{{ rec.end_date }}</td>
+            <td>{{ rec.value }}</td>
+            <td>{{ rec.description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form method="post" action="/import/confirm">
+    <input type="hidden" name="token" value="{{ token }}" />
+    <button type="submit" class="button">Potrdi uvoz</button>
+    <a href="/import" class="button secondary">Prekliči</a>
+</form>
+{% endblock %}
